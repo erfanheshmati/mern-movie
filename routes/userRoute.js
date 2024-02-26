@@ -3,6 +3,7 @@ const {
   userValidator,
   validate,
   validatePassword,
+  signInValidator,
 } = require("../middlewares/validator");
 const {
   createUser,
@@ -11,6 +12,7 @@ const {
   forgetPassword,
   sendResetPasswordTokenStatus,
   resetPassword,
+  signIn,
 } = require("../controllers/userController");
 const { isValidPasswordResetToken } = require("../middlewares/user");
 
@@ -32,5 +34,6 @@ router.post(
   validate,
   resetPassword
 );
+router.post("/sign-in", signInValidator, validate, signIn);
 
 module.exports = router;

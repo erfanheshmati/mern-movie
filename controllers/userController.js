@@ -5,6 +5,7 @@ const { generateOTP, generateMailTransporter } = require("../utils/mail");
 const { isValidObjectId } = require("mongoose");
 const { sendError, generateRandomByte } = require("../utils/helper");
 const PasswordResetToken = require("../models/passwordResetTokenModel");
+const jwt = require("jsonwebtoken");
 
 exports.createUser = async (req, res) => {
   const { name, email, password } = req.body;
@@ -41,7 +42,6 @@ exports.createUser = async (req, res) => {
     <p>${OTP}</p>
     `,
   });
-
   res.status(201).json({
     message: "Please verify your email. OTP has been sent!",
   });
@@ -75,11 +75,10 @@ exports.verifyEmail = async (req, res) => {
   transport.sendMail({
     from: "verification@movieapp.com",
     to: user.email,
-    subject: "Email Verification",
+    subject: "Welcome Email",
     html: `
-    <b>Hi ${user.name}</b>
-    <P>Your verification OTP:</P>
-    <p>${OTP}</p>
+    <b>Welcome ${user.name}</b>
+    <P>Your email is verified</P>
     `,
   });
   res.json({ message: "Your email is verified" });
@@ -191,7 +190,6 @@ exports.resetPassword = async (req, res) => {
   // hash new password and insert into the database
   user.password = bcrypt.hashSync(newPassword, 10);
   await user.save();
-
   // clear password token
   await PasswordResetToken.findByIdAndDelete(res.passwordResetToken._id);
 
@@ -209,4 +207,23 @@ exports.resetPassword = async (req, res) => {
          `,
   });
   res.json({ message: "Password reset successfully" });
+};
+
+exports.signIn = async (req, res) => {
+  const { email, password } = req.body;
+  const user = await User.findOne({ email });
+  if (!user) {
+    return sendError(res, 404, "User not found");
+  }
+  const isMatched = bcrypt.compareSync(password, user.password);
+  if (!isMatched) {
+    return sendError(res, 401, "Invalid password");
+  }
+  const jwtToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET);
+  res.json({
+    id: user._id,
+    name: user.name,
+    email: user.email,
+    token: jwtToken,
+  });
 };
