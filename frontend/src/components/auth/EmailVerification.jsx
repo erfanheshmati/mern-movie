@@ -2,6 +2,8 @@ import React, { useEffect, useRef, useState } from 'react'
 import Container from '../Container'
 import Title from '../form/Title'
 import Submit from '../form/Submit'
+import FormContainer from '../form/FormContainer'
+import { commonModalClasses } from '../../utils/theme'
 
 export default function EmailVerification() {
     const OTP_LENGTH = 6
@@ -38,11 +40,11 @@ export default function EmailVerification() {
     }, [activeOtpIndex])
 
     return (
-        <div className="fixed inset-0 bg-primary -z-10 flex justify-center items-center">
+        <FormContainer>
             <Container>
-                <form className="bg-secondary rounded p-6 space-y-6">
+                <form className={commonModalClasses}>
                     <Title children="Verify Your Account" />
-                    <p className='text-center text-dark-subtle'>OTP has been sent to your email</p>
+                    <p className='text-center text-light-subtle dark:text-dark-subtle'>OTP has been sent to your email</p>
                     <div className='flex justify-center items-center gap-2'>
                         {otp.map((_, index) => {
                             return (
@@ -53,13 +55,13 @@ export default function EmailVerification() {
                                     onChange={(e) => handleOtpChange(e, index)}
                                     onKeyDown={(e) => handleKeyDown(e, index)}
                                     type="number"
-                                    className='w-12 h-12 border-2 border-dark-subtle focus:border-white rounded bg-transparent outline-none text-center text-white font-semibold text-xl spin-button-none' />
+                                    className='w-12 h-12 border-2 border-light-subtle dark:border-dark-subtle focus:border-primary dark:focus:border-white rounded bg-transparent outline-none text-center text-primary dark:text-white font-semibold text-xl spin-button-none' />
                             )
                         })}
                     </div>
                     <Submit value="Submit" />
                 </form>
             </Container>
-        </div>
+        </FormContainer>
     )
 }

@@ -4,22 +4,26 @@ import Title from '../form/Title';
 import Input from '../form/Input';
 import Submit from '../form/Submit';
 import CustomLink from '../CustomLink';
+import { commonModalClasses } from '../../utils/theme';
+import FormContainer from '../form/FormContainer';
 
 export default function Signup() {
     return (
-        <div className="fixed inset-0 bg-primary -z-10 flex justify-center items-center">
+        <FormContainer>
             <Container>
-                <form className="bg-secondary rounded p-6 w-96 space-y-6">
+                <form className={commonModalClasses + "w-80"}>
                     <Title children="Sign Up" />
-                    <Input name="name" placeholder="John Doe" label="Name" type="text" autocomplete="off" />
-                    <Input name="email" placeholder="example@gmail.com" label="Email" type="text" autocomplete="off" />
-                    <Input name="password" placeholder="********" label="Password" type="password" />
+                    <div className='space-y-3'>
+                        <Input name="name" placeholder="John Doe" label="Name" type="text" autoComplete="off" />
+                        <Input name="email" placeholder="example@gmail.com" label="Email" type="text" autoComplete="off" />
+                        <Input name="password" placeholder="********" label="Password" type="password" />
+                    </div>
                     <Submit value="Sign up" />
                     <div className='flex justify-between'>
                         <CustomLink to="/auth/signin" children="Sign In" />
                     </div>
                 </form>
             </Container>
-        </div>
+        </FormContainer>
     )
 }
