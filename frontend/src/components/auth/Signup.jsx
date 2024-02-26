@@ -3,6 +3,7 @@ import Container from "../Container";
 import Title from '../form/Title';
 import Input from '../form/Input';
 import Submit from '../form/Submit';
+import CustomLink from '../CustomLink';
 
 export default function Signup() {
     return (
@@ -15,7 +16,7 @@ export default function Signup() {
                     <Input name="password" placeholder="********" label="Password" type="password" />
                     <Submit value="Sign up" />
                     <div className='flex justify-between'>
-                        <a href="#" className='text-dark-subtle hover:text-white transition'>Sign In</a>
+                        <CustomLink to="/auth/signin" children="Sign In" />
                     </div>
                 </form>
             </Container>
