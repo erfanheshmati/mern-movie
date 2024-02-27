@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Container from "../Container";
 import Title from '../form/Title';
 import Input from '../form/Input';
@@ -8,7 +8,7 @@ import { commonModalClasses } from '../../utils/theme';
 import FormContainer from '../form/FormContainer';
 import { createUser } from '../../api/auth';
 import { useNavigate } from 'react-router-dom';
-import { useNotification } from '../../hooks';
+import { useAuth, useNotification } from '../../hooks';
 
 export default function Signup() {
     const [userInfo, setUserInfo] = useState({
@@ -20,6 +20,9 @@ export default function Signup() {
     const navigate = useNavigate()
 
     const { updateNotification } = useNotification()
+
+    const { authInfo } = useAuth()
+    const { isLoggedIn } = authInfo
 
     const handleChange = (e) => {
         setUserInfo({ ...userInfo, [e.target.name]: e.target.value })
@@ -48,10 +51,14 @@ export default function Signup() {
         const response = await createUser(userInfo)
         if (response.error) return console.log(response.error)
         navigate("/auth/verification", {
-            state: { user: response },
-            relative: true
+            state: { user: response.user },
+            replace: true
         })
     }
+
+    useEffect(() => {
+        if (isLoggedIn) navigate('/')
+    }, [isLoggedIn])
 
     return (
         <FormContainer>

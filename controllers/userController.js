@@ -43,9 +43,11 @@ exports.createUser = async (req, res) => {
     `,
   });
   res.status(201).json({
-    id: newUser._id,
-    name: newUser.name,
-    email: newUser.email,
+    user: {
+      id: newUser._id,
+      name: newUser.name,
+      email: newUser.email,
+    },
   });
 };
 
@@ -83,17 +85,15 @@ exports.verifyEmail = async (req, res) => {
     `,
   });
   const jwtToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET);
-  res.json(
-    {
-      user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-        token: jwtToken,
-      },
+  res.status(201).json({
+    user: {
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      token: jwtToken,
     },
-    { message: "Your email is verified" }
-  );
+    message: "Your email is verified",
+  });
 };
 
 exports.resendVerifyEmail = async (req, res) => {
@@ -232,10 +232,12 @@ exports.signIn = async (req, res) => {
     return sendError(res, 401, "Invalid password");
   }
   const jwtToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET);
-  res.json({
-    id: user._id,
-    name: user.name,
-    email: user.email,
-    token: jwtToken,
+  res.status(201).json({
+    user: {
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      token: jwtToken,
+    },
   });
 };

@@ -59,11 +59,10 @@ export default function EmailVerification() {
 
     const handleSubmit = async (e) => {
         e.preventDefault()
-        if (!isValidOTP(otp)) return console.log("Invalid OTP")
+        if (!isValidOTP(otp)) return updateNotification("error", "Invalid OTP")
         const { error, message } = await verifyEmail({ OTP: otp.join(''), userId: user.id })
         if (error) return updateNotification("error", error)
         updateNotification("success", message)
-        navigate("/")
     }
 
     useEffect(() => {
@@ -73,9 +72,9 @@ export default function EmailVerification() {
     return (
         <FormContainer>
             <Container>
-                <form className={commonModalClasses} onSubmit={handleSubmit}>
-                    <Title children="Verify Your Account" />
-                    <p className='text-center text-light-subtle dark:text-dark-subtle'>OTP has been sent to your email</p>
+                <form className={commonModalClasses + "w-[360px] sm:w-full"} onSubmit={handleSubmit}>
+                    <Title children="Please Enter the OTP to Verify Your Account" />
+                    <p className='text-center text-light-subtle dark:text-dark-subtle'>OTP has been sent to {user.email}</p>
                     <div className='flex justify-center items-center gap-2'>
                         {otp.map((_, index) => {
                             return (
@@ -90,7 +89,7 @@ export default function EmailVerification() {
                             )
                         })}
                     </div>
-                    <Submit value="Submit" />
+                    <Submit value="Verify Account" />
                 </form>
             </Container>
         </FormContainer>
