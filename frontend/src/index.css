@@ -2,8 +2,28 @@
 @tailwind components;
 @tailwind utilities;
 
-/* remove counter option in input number */
+/* remove counter option of input number */
 .spin-button-none::-webkit-outer-spin-button,
 .spin-button-none::-webkit-inner-spin-button {
   appearance: none;
+}
+
+.bounce-custom {
+  animation: bounce 0.5s infinite;
+}
+
+@keyframes bounce {
+  from,
+  to {
+    transform: scale(1, 1);
+  }
+  25% {
+    transform: scale(0.9, 1.1);
+  }
+  50% {
+    transform: scale(1.1, 0.9);
+  }
+  75% {
+    transform: scale(0.95, 1.05);
+  }
 }

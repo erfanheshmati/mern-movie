@@ -19,8 +19,8 @@ const { isValidPasswordResetToken } = require("../middlewares/user");
 const router = express.Router();
 
 router.post("/create", userValidator, validate, createUser);
-router.post("/verify-email/:id", verifyEmail);
-router.post("/verify-email/resend/:id", resendVerifyEmail);
+router.post("/verify-email", verifyEmail);
+router.post("/verify-email/resend", resendVerifyEmail);
 router.post("/forget-password", forgetPassword);
 router.post(
   "/verify-password-reset-token",

@@ -4,12 +4,21 @@ import Title from '../form/Title'
 import Submit from '../form/Submit'
 import FormContainer from '../form/FormContainer'
 import { commonModalClasses } from '../../utils/theme'
+import { useLocation, useNavigate } from 'react-router-dom'
+import { verifyEmail } from '../../api/auth'
+import { useNotification } from '../../hooks'
 
 export default function EmailVerification() {
     const OTP_LENGTH = 6
     const [otp, setOtp] = useState(new Array(OTP_LENGTH).fill(''))
     const [activeOtpIndex, setActiveOtpIndex] = useState(0)
     const inputRef = useRef()
+
+    const { state } = useLocation()
+    const user = state?.user
+    const navigate = useNavigate()
+
+    const { updateNotification } = useNotification()
 
     const focusNextInputField = (index) => {
         setActiveOtpIndex(index + 1)
@@ -39,10 +48,32 @@ export default function EmailVerification() {
         inputRef.current?.focus()
     }, [activeOtpIndex])
 
+    const isValidOTP = (otp) => {
+        let valid = false
+        for (let val of otp) {
+            valid = !isNaN(parseInt(val))
+            if (!valid) break
+        }
+        return valid
+    }
+
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+        if (!isValidOTP(otp)) return console.log("Invalid OTP")
+        const { error, message } = await verifyEmail({ OTP: otp.join(''), userId: user.id })
+        if (error) return updateNotification("error", error)
+        updateNotification("success", message)
+        navigate("/")
+    }
+
+    useEffect(() => {
+        if (!user) navigate("/not-found")
+    }, [user])
+
     return (
         <FormContainer>
             <Container>
-                <form className={commonModalClasses}>
+                <form className={commonModalClasses} onSubmit={handleSubmit}>
                     <Title children="Verify Your Account" />
                     <p className='text-center text-light-subtle dark:text-dark-subtle'>OTP has been sent to your email</p>
                     <div className='flex justify-center items-center gap-2'>

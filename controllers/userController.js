@@ -37,9 +37,9 @@ exports.createUser = async (req, res) => {
     to: newUser.email,
     subject: "Email Verification",
     html: `
-    <b>Hi ${newUser.name}</b>
-    <P>Your verification OTP:</P>
-    <p>${OTP}</p>
+    <h2>Hi ${newUser.name}</h2>
+    <h3>Your verification OTP:</h3>
+    <h3>${OTP}</h3>
     `,
   });
   res.status(201).json({
@@ -50,8 +50,7 @@ exports.createUser = async (req, res) => {
 };
 
 exports.verifyEmail = async (req, res) => {
-  const userId = req.params.id;
-  const { OTP } = req.body;
+  const { userId, OTP } = req.body;
 
   if (!isValidObjectId(userId)) return sendError(res, 401, "Invalid user");
 
@@ -79,15 +78,26 @@ exports.verifyEmail = async (req, res) => {
     to: user.email,
     subject: "Welcome Email",
     html: `
-    <b>Welcome ${user.name}</b>
-    <P>Your email is verified</P>
+    <h2>Welcome ${user.name}</h2>
+    <h3>Your email is verified</h3>
     `,
   });
-  res.json({ message: "Your email is verified" });
+  const jwtToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET);
+  res.json(
+    {
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        token: jwtToken,
+      },
+    },
+    { message: "Your email is verified" }
+  );
 };
 
 exports.resendVerifyEmail = async (req, res) => {
-  const userId = req.params.id;
+  const { userId } = req.body;
 
   const user = await User.findById(userId);
   if (!user) return sendError(res, 404, "User not found");
@@ -120,9 +130,9 @@ exports.resendVerifyEmail = async (req, res) => {
     to: user.email,
     subject: "Email Verification",
     html: `
-     <b>Hi ${user.name}</b>
-     <P>Your verification OTP:</P>
-     <p>${OTP}</p>
+     <h2>Hi ${user.name}</h2>
+     <h3>Your verification OTP:</h3>
+     <h3>${OTP}</h3>
      `,
   });
   res.json({ message: "New token has been sent to your email" });
@@ -164,8 +174,8 @@ exports.forgetPassword = async (req, res) => {
     to: user.email,
     subject: "Reset Password",
     html: `
-       <b>Hi ${user.name}</b>
-       <P>Click here to reset your password:</P>
+       <h2>Hi ${user.name}</h2>
+       <h3>Click here to reset your password:</h3>
        <a href="${resetPasswordUrl}">Change Password</a>
        `,
   });
@@ -203,9 +213,9 @@ exports.resetPassword = async (req, res) => {
     to: user.email,
     subject: "Password Reset Successfully",
     html: `
-         <b>Hi ${user.name}</b>
-         <p>Password Reset Successfully</p>
-         <p>You can use your new password now</p>
+         <h2>Hi ${user.name}</h2>
+         <h3>Password Reset Successfully</h3>
+         <h3>You can use your new password now</h3>
          `,
   });
   res.json({ message: "Password reset successfully" });

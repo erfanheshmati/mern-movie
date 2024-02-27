@@ -2,7 +2,7 @@ import React from 'react'
 
 export default function FormContainer({ children }) {
     return (
-        <div className="fixed inset-0 bg-white dark:bg-primary -z-10 flex justify-center items-center">
+        <div className="fixed inset-0 bg-white dark:bg-primary -z-10 flex justify-center items-center mt-14">
             {children}
         </div>
     )
