@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 
 export default function Navbar() {
     const { toggleTheme } = useTheme()
-    const { authInfo } = useAuth()
+    const { authInfo, handleLogout } = useAuth()
     const { isLoggedIn } = authInfo
     return (
         <div className="bg-secondary shadow-sm shadow-gray-500">
@@ -26,7 +26,7 @@ export default function Navbar() {
                         </li>
                         <li>
                             {isLoggedIn ?
-                                (<button className="text-white/70 hover:text-white font-semibold text-lg">Logout</button>) :
+                                (<button onClick={handleLogout} className="text-white/70 hover:text-white font-semibold text-lg">Logout</button>) :
                                 (<Link className="text-white/70 hover:text-white font-semibold text-lg" to="/auth/signin">Login</Link>)}
                         </li>
                     </ul>
