@@ -13,7 +13,7 @@ export default function Navbar() {
             <Container className="p-2">
                 <div className="flex justify-between items-center">
                     <Link to="/">
-                        <img src="../logo.png" alt="logo" className='h-10 hidden sm:block' />
+                        <img src="../logo.png" alt="logo" className='h-10' />
                     </Link>
                     <ul className='flex items-center space-x-4'>
                         <li>
@@ -22,7 +22,7 @@ export default function Navbar() {
                             </button>
                         </li>
                         <li>
-                            <input type="text" placeholder='search...' className="border-2 border-dark-subtle p-1 rounded bg-transparent text-xl outline-none focus:border-white transition text-white" />
+                            <input type="text" placeholder='Search...' className="border-2 border-dark-subtle p-1 rounded bg-transparent text-xl outline-none focus:border-white transition text-white w-32 sm:w-60" />
                         </li>
                         <li>
                             {isLoggedIn ?

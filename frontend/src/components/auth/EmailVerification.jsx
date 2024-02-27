@@ -6,7 +6,7 @@ import FormContainer from '../form/FormContainer'
 import { commonModalClasses } from '../../utils/theme'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { verifyEmail } from '../../api/auth'
-import { useNotification } from '../../hooks'
+import { useAuth, useNotification } from '../../hooks'
 
 export default function EmailVerification() {
     const OTP_LENGTH = 6
@@ -19,6 +19,9 @@ export default function EmailVerification() {
     const navigate = useNavigate()
 
     const { updateNotification } = useNotification()
+
+    const { isAuth, authInfo } = useAuth()
+    const { isLoggedIn } = authInfo
 
     const focusNextInputField = (index) => {
         setActiveOtpIndex(index + 1)
@@ -60,14 +63,17 @@ export default function EmailVerification() {
     const handleSubmit = async (e) => {
         e.preventDefault()
         if (!isValidOTP(otp)) return updateNotification("error", "Invalid OTP")
-        const { error, message } = await verifyEmail({ OTP: otp.join(''), userId: user.id })
+        const { error, message, user: userResponse } = await verifyEmail({ OTP: otp.join(''), userId: user.id })
         if (error) return updateNotification("error", error)
         updateNotification("success", message)
+        localStorage.setItem("auth-token", userResponse.token)
+        isAuth()
     }
 
     useEffect(() => {
         if (!user) navigate("/not-found")
-    }, [user])
+        if (isLoggedIn) navigate('/')
+    }, [user, isLoggedIn])
 
     return (
         <FormContainer>
