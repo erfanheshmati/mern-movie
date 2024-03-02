@@ -22,7 +22,7 @@ const router = express.Router();
 
 router.post("/create", userValidator, validate, createUser);
 router.post("/verify-email", verifyEmail);
-router.post("/verify-email/resend", resendVerifyEmail);
+router.post("/resend-verify-email", resendVerifyEmail);
 router.post("/forget-password", forgetPassword);
 router.post(
   "/verify-password-reset-token",
@@ -40,7 +40,14 @@ router.post("/sign-in", signInValidator, validate, signIn);
 
 router.get("/is-auth", isAuth, (req, res) => {
   const { user } = req;
-  res.json({ user: { id: user._id, name: user.name, email: user.email } });
+  res.json({
+    user: {
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      isVerified: user.isVerified,
+    },
+  });
 });
 
 module.exports = router;

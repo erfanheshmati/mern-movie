@@ -5,7 +5,7 @@ import Submit from '../form/Submit'
 import FormContainer from '../form/FormContainer'
 import { commonModalClasses } from '../../utils/theme'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { verifyEmail } from '../../api/auth'
+import { resendVerifyEmail, verifyEmail } from '../../api/auth'
 import { useAuth, useNotification } from '../../hooks'
 
 export default function EmailVerification() {
@@ -21,7 +21,8 @@ export default function EmailVerification() {
     const { updateNotification } = useNotification()
 
     const { isAuth, authInfo } = useAuth()
-    const { isLoggedIn } = authInfo
+    const { isLoggedIn, profile } = authInfo
+    const isVerified = profile?.isVerified
 
     const focusNextInputField = (index) => {
         setActiveOtpIndex(index + 1)
@@ -32,6 +33,12 @@ export default function EmailVerification() {
         const diff = index - 1
         nextIndex = diff !== 0 ? diff : 0
         setActiveOtpIndex(nextIndex)
+    }
+
+    const handleResendVerifyEmail = async () => {
+        const { error, message } = await resendVerifyEmail(user.id)
+        if (error) return updateNotification("error", error)
+        updateNotification("success", message)
     }
 
     const handleOtpChange = ({ target }, index) => {
@@ -72,8 +79,8 @@ export default function EmailVerification() {
 
     useEffect(() => {
         if (!user) navigate("/not-found")
-        if (isLoggedIn) navigate('/')
-    }, [user, isLoggedIn])
+        if (isLoggedIn && isVerified) navigate('/')
+    }, [user, isLoggedIn, isVerified])
 
     return (
         <FormContainer>
@@ -95,7 +102,12 @@ export default function EmailVerification() {
                             )
                         })}
                     </div>
-                    <Submit value="Verify Account" />
+                    <div>
+                        <Submit value="Verify Account" />
+                        <button type='button' className='text-blue-500 hover:underline font-semibold mt-4 px-1' onClick={handleResendVerifyEmail}>
+                            I don not have OTP
+                        </button>
+                    </div>
                 </form>
             </Container>
         </FormContainer>

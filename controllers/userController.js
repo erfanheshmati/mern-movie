@@ -91,6 +91,7 @@ exports.verifyEmail = async (req, res) => {
       name: user.name,
       email: user.email,
       token: jwtToken,
+      isVerified: user.isVerified,
     },
     message: "Your email is verified",
   });
@@ -197,7 +198,7 @@ exports.resetPassword = async (req, res) => {
       401,
       "The new password must be different from the old one"
     );
-    
+
   // hash new password and insert into the database
   user.password = bcrypt.hashSync(newPassword, 10);
   await user.save();
@@ -237,6 +238,7 @@ exports.signIn = async (req, res) => {
       name: user.name,
       email: user.email,
       token: jwtToken,
+      isVerified: user.isVerified,
     },
   });
 };
