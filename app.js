@@ -2,6 +2,7 @@ const express = require("express");
 require("express-async-errors");
 const morgan = require("morgan");
 const userRoute = require("./routes/userRoute");
+const actorRoute = require("./routes/actorRoute");
 const { errorHandler } = require("./middlewares/error");
 require("dotenv").config();
 require("./db");
@@ -14,6 +15,7 @@ app.use(express.json());
 app.use(morgan("dev"));
 
 app.use("/api/user", userRoute);
+app.use("/api/actor", actorRoute);
 app.use("/*", handleNotFound);
 
 app.use(errorHandler);

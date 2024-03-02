@@ -135,7 +135,7 @@ exports.resendVerifyEmail = async (req, res) => {
      <h3>${OTP}</h3>
      `,
   });
-  res.json({ message: "New token has been sent to your email" });
+  res.json({ message: "New OTP has been sent to your email" });
 };
 
 exports.forgetPassword = async (req, res) => {
