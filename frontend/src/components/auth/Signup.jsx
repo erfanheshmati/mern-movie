@@ -9,6 +9,7 @@ import FormContainer from '../form/FormContainer';
 import { createUser } from '../../api/auth';
 import { useNavigate } from 'react-router-dom';
 import { useAuth, useNotification } from '../../hooks';
+import { isValidEmail } from '../../utils/helper';
 
 export default function Signup() {
     const [userInfo, setUserInfo] = useState({
@@ -29,14 +30,13 @@ export default function Signup() {
     }
 
     const validateUserInfo = ({ name, email, password }) => {
-        const isValidName = /^[a-z A-Z]+$/
-        const isValidMail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
+        const isValidName = /^[a-z A-Z]+$/;
 
         if (!name.trim()) return { ok: false, error: "Name is missing" }
         if (!isValidName.test(name)) return { ok: false, error: "Invalid Name" }
 
         if (!email.trim()) return { ok: false, error: "Email is missing" }
-        if (!isValidMail.test(email)) return { ok: false, error: "Invalid Email" }
+        if (!isValidEmail(email)) return { ok: false, error: "Invalid Email" }
 
         if (!password.trim()) return { ok: false, error: "Password is missing" }
         if (password.length < 4) return { ok: false, error: "Password must be 4 to 20 characters" }

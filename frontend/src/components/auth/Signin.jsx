@@ -8,6 +8,7 @@ import { commonModalClasses } from '../../utils/theme';
 import FormContainer from '../form/FormContainer';
 import { useAuth, useNotification } from '../../hooks';
 import { useNavigate } from 'react-router-dom';
+import { isValidEmail } from '../../utils/helper';
 
 export default function Signin() {
     const [userInfo, setUserInfo] = useState({
@@ -27,10 +28,9 @@ export default function Signin() {
     }
 
     const validateUserInfo = ({ email, password }) => {
-        const isValidMail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
 
         if (!email.trim()) return { ok: false, error: "Email is missing" }
-        if (!isValidMail.test(email)) return { ok: false, error: "Invalid Email" }
+        if (!isValidEmail(email)) return { ok: false, error: "Invalid Email" }
 
         if (!password.trim()) return { ok: false, error: "Password is missing" }
         if (password.length < 4) return { ok: false, error: "Password must be 4 to 20 characters" }
