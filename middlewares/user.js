@@ -19,7 +19,7 @@ exports.isValidPasswordResetToken = async (req, res, next) => {
   if (!isMatched)
     return sendError(res, 401, "Unauthorized access, invalid request");
 
-  res.passwordResetToken = passwordResetToken;
+  req.passwordResetToken = passwordResetToken;
 
   next();
 };

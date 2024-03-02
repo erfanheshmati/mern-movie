@@ -7,11 +7,15 @@ import FormContainer from '../form/FormContainer'
 import { commonModalClasses } from '../../utils/theme'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { ImSpinner3 } from 'react-icons/im'
-import { verifyPasswordResetToken } from '../../api/auth'
+import { resetPassword, verifyPasswordResetToken } from '../../api/auth'
 import { useNotification } from '../../hooks'
 
 export default function ConfirmPassword() {
-  // http://localhost:5000/auth/reset-password?token=bd70056babf6d8ff26a46ffea4d76a3566b4d49682a8cd3c8682299fe32c&id=65de06a2b42bffecf34cc3eb
+  const [password, setPassword] = useState({
+    one: "",
+    two: ""
+  })
+
   const [searchParams] = useSearchParams()
   const token = searchParams.get("token")
   const id = searchParams.get("id")
@@ -68,14 +72,32 @@ export default function ConfirmPassword() {
     )
   }
 
+  const handleChange = (e) => {
+    setPassword({
+      ...password,
+      [e.target.name]: e.target.value
+    })
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    if (!password.one.trim()) return updateNotification("error", "Password is missing")
+    if (password.one.trim().length < 4) return updateNotification("error", "Password must be at least 4 characters")
+    if (password.one !== password.two) return updateNotification("error", "Passwords do not match")
+    const { error, message } = await resetPassword({ newPassword: password.one, userId: id, token })
+    if (error) return updateNotification("error", error)
+    updateNotification("success", message)
+    navigate("/auth/signin", { replace: true })
+  }
+
   return (
     <FormContainer>
       <Container>
-        <form className={commonModalClasses + "w-80"}>
+        <form className={commonModalClasses + "w-80"} onSubmit={handleSubmit}>
           <Title children="Set New Password" />
           <div className='space-y-3'>
-            <Input name="password" placeholder="********" label="Password" type="password" />
-            <Input name="confirmPassword" placeholder="********" label="Confirm Password" type="password" />
+            <Input name="one" placeholder="********" label="Password" type="password" value={password.one} onChange={handleChange} />
+            <Input name="two" placeholder="********" label="Confirm Password" type="password" value={password.two} onChange={handleChange} />
           </div>
           <Submit value="Submit" />
         </form>

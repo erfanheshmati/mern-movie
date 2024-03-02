@@ -111,7 +111,6 @@ exports.resendVerifyEmail = async (req, res) => {
       401,
       "Only after 2 minutes you can request for another token"
     );
-
   // generate 6 digit random OTP
   let OTP = generateOTP();
   // hash token
@@ -151,7 +150,7 @@ exports.forgetPassword = async (req, res) => {
     return sendError(
       res,
       401,
-      "Only after 2 minutes you can request for another token"
+      "Only after 2 minutes you can request for another link"
     );
 
   // generate long random token
@@ -165,7 +164,7 @@ exports.forgetPassword = async (req, res) => {
   });
   await newPasswordResetToken.save();
   // reset password url
-  const resetPasswordUrl = `http://localhost:5000/auth/reset-password?token=${token}&id=${user._id}`;
+  const resetPasswordUrl = `http://localhost:3000/auth/reset-password?token=${token}&id=${user._id}`;
   // generate email transporter
   const transport = generateMailTransporter();
   // send email to user
@@ -198,12 +197,12 @@ exports.resetPassword = async (req, res) => {
       401,
       "The new password must be different from the old one"
     );
-
+    
   // hash new password and insert into the database
   user.password = bcrypt.hashSync(newPassword, 10);
   await user.save();
   // clear password token
-  await PasswordResetToken.findByIdAndDelete(res.passwordResetToken._id);
+  await PasswordResetToken.findByIdAndDelete(req.passwordResetToken._id);
 
   // generate email transporter
   const transport = generateMailTransporter();
